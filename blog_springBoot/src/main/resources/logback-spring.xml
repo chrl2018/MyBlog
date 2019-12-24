@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- logback配置文件 ，暂时不用，使用log4j -->
+<!-- scanPeriod default 1 minutes
+    milliseconds, seconds, minutes or hours -->
+<!--     debug为true表示启动时会在控制台打印slf4j的启动日志，scan为true表示热加载，scanPeriod表示扫描周期
+    此处即表示项目正常使用过程中会每7秒重新扫描一次该配置文件-->
+<configuration debug="true" scan="true" scanPeriod="30 seconds">
+    <property name="LOG_PATH" value="./log" />
+    <property name="LOG_FILE_NAME" value="myblog-springboot" />
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%t][%le] %logger{10} - %msg %n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <!--生成DEBUG日志文件 -->
+    <!-- 按时间滚动的策略 -->
+    <appender name="dailyFileDebug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/DEBUG/${LOG_FILE_NAME}-debug.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <FileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}-debug.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!-- 保留 30天数据，默认无限-->
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread][%level] %logger{36} - %msg %n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+    <!--生成ERROR日志文件 -->
+    <appender name="dailyFileError" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/ERROR/${LOG_FILE_NAME}-error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <FileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}-error.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!-- 保留 30天数据，默认无限-->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread][%level] %logger{36} - %msg %n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <!--生成INFO以上级别日志文件 -->
+    <!--按时间滚动的策略 -->
+    <appender name="dailyFileInfo" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/INFO/${LOG_FILE_NAME}-info.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <FileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}-info.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!-- 保留 30天数据，默认无限-->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread][%level] - %msg %n
+            </pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <!--针对二进制流的打印,统一打印到-->
+    <!--<logger name="tcpbinary" level="DEBUG" additivity="false">-->
+    <!--<appender-ref ref="binaryAppender" />-->
+    <!--</logger>-->
+
+    <!-- 日志级别 TRACE, DEBUG, INFO, WARN, ERROR -->
+    <root level="DEBUG">
+        <appender-ref ref="console" />
+        <appender-ref ref="dailyFileDebug" />
+        <appender-ref ref="dailyFileInfo" />
+        <appender-ref ref="dailyFileError" />
+    </root>
+</configuration>
