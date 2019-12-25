@@ -3,15 +3,14 @@ package cn.dblearn.blog.manage.oss.controller;
 
 import cn.dblearn.blog.core.common.Result;
 import cn.dblearn.blog.core.common.exception.MyException;
+import cn.dblearn.blog.core.common.util.SFTPUtils;
 import cn.dblearn.blog.core.entity.oss.OssResource;
-import cn.dblearn.blog.manage.oss.service.CloudStorageService;
-import cn.dblearn.blog.manage.oss.service.FileUploadService;
-import cn.dblearn.blog.manage.oss.service.OssResourceService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * <p>
@@ -25,14 +24,26 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/admin/oss/resource")
 public class OssResourceController {
 
-    @Autowired
-    private OssResourceService ossResourceService;
+    @Value("${sftp.ip}")
+    private String SFTP_ADDRESS;
 
-    @Autowired
-    private CloudStorageService cloudStorageService;
+    @Value("${sftp.port}")
+    private Integer SFTP_PORT;
 
-    @Autowired
-    private FileUploadService fileUploadService;
+    @Value("${sftp.visit-port}")
+    private Integer SFTP_VISIT_PORT;
+
+    @Value("${sftp.visit-path}")
+    private String SFTP_VISIT_PATH;
+
+    @Value("${sftp.username}")
+    private String SFTP_USERNAME;
+
+    @Value("${sftp.password}")
+    private String SFTP_PASSWORD;
+
+    @Value("${sftp.upload-path}")
+    private String remotePath;
 
     @PostMapping("/upload")
     public Result uploadCover(MultipartFile file) throws Exception{
@@ -40,17 +51,21 @@ public class OssResourceController {
             throw new MyException("上传文件不能为空");
         }
         //上传文件
-        String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        String url =cloudStorageService.uploadSuffix(file.getBytes(), suffix);
-        OssResource resource=new OssResource(url,file.getOriginalFilename());
-        ossResourceService.save(resource);
+        String fileName = file.getOriginalFilename();
+//        Date currentTime = new Date();
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+//        String fileDir = formatter.format(currentTime);
+
+        SFTPUtils sftpUtils = new SFTPUtils(SFTP_ADDRESS,SFTP_PORT,SFTP_USERNAME,SFTP_PASSWORD,remotePath);
+        //异步上传文件
+        sftpUtils.uploadFile( file.getOriginalFilename(),remotePath,file);
+        String url = SFTP_ADDRESS+":"+SFTP_VISIT_PORT+SFTP_VISIT_PATH+fileName;
+        OssResource resource = new OssResource(url,fileName);
         return Result.ok().put("resource", resource);
     }
 
-    @PostMapping("/upload1")
-    public Result upload(MultipartFile file) throws Exception{
-        //上传文件
-        String path = fileUploadService.fileUpload(file,"pic");
-        return Result.ok().put("resource", path);
+    @PostMapping("/downLoad")
+    public Result downLoad(MultipartFile file) throws Exception{
+        return Result.ok();
     }
 }

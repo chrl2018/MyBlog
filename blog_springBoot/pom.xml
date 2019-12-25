@@ -170,6 +170,19 @@
 			<version>5.15.0</version>
 		</dependency>
 
+		<!-- 文件ftp服务 -->
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.54</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
