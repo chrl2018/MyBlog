@@ -44,8 +44,12 @@ public class SysCaptchaServiceImpl implements SysCaptchaService {
         }
         //生成文字验证码
         String code = producer.createText();
-        // 存进redis,5分钟后过期
-        redisUtils.set(genRedisKey(uuid),code,CAPTCHA_EXPIRE);
+        try{
+            // 存进redis,5分钟后过期
+            redisUtils.set(genRedisKey(uuid),code,CAPTCHA_EXPIRE);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         return producer.createImage(code);
     }
 

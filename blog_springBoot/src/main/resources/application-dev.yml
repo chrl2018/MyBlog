@@ -63,17 +63,20 @@ mybatis-plus:
   global-config:
     #刷新Mapper，只在开发环境打开
     refresh: true
-oss:
-  qiniu:
-    domain: http://oss.dblearn.cn
-    prefix: dbblog
-    accessKey: ENC(pVGOa/io1AnqiEKkDTVORO3W8nzn+vbOl53TeRBIGgCuWvqUEzOAdIBLmdpoYVmsDHESGVc2QzY=)
-    secretKey: ENC(UXM3TEuaIuLrPdKuDASHoZExQyOrgGl7PqV/iB0EbHOFhnUSF3bMol8D2qh+QlthccS5QD0fHbM=)
-    bucketName: test
 
-# 文件上传路径
-web:
-  upload-path: /home/file_server/logo
+# 文件上传
+sftp:
+  ip: 121.40.174.219
+  port: 22
+  visit-port: 8090 #文件服务器访问地址
+  visit-path: /image/  #图片文件访问路由地址
+  username: root
+  password: Chrl1992
+  downloadSleep: 100 #文件下载失败下次超时重试时间
+  downloadRetry: 10 #文件下载失败重试次数
+  uploadSleep: 100 #文件上传失败下次超时重试时间
+  uploadRettry: 10  #文件上传失败重试次数
+  upload-path: /home/file_server/blog/image/
 
 jasypt:
   encryptor:
