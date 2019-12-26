@@ -14,6 +14,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +32,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
+@RequestMapping(value = "/")
 public class ArticleEsController {
 
     @Resource

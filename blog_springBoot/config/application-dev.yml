@@ -46,7 +46,7 @@ spring:
   data:
     elasticsearch:
       cluster-name: elasticsearch
-      cluster-nodes: localhost:9300
+      cluster-nodes: 121.40.174.219:9300
       repositories:
              enabled: true
   # rabbitMQ配置
